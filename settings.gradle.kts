@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Image Detectiion TUBES"
+rootProject.name = "Image Detection TUBES"
 include(":app")
  

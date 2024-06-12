@@ -1,4 +1,4 @@
-package com.example.imagedetectiiontubes
+package com.example.imagedetectiontubes
 
 import org.junit.Test
 

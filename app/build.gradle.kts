@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.imagedetectiiontubes"
+    namespace = "com.example.imagedetectiontubes"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.imagedetectiiontubes"
+        applicationId = "com.example.imagedetectiontubes"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

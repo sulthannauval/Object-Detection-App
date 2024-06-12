@@ -1,4 +1,4 @@
-package com.example.imagedetectiiontubes.ui.theme
+package com.example.imagedetectiontubes.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

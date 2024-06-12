@@ -1,4 +1,4 @@
-package com.example.imagedetectiiontubes
+package com.example.imagedetectiontubes
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,7 +21,7 @@ import android.view.Surface
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
-import com.example.imagedetectiiontubes.ml.AutoModel1
+import com.example.imagedetectiontubes.ml.AutoModel1
 import org.tensorflow.lite.support.common.FileUtil
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage

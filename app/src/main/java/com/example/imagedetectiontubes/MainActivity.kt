@@ -2,6 +2,7 @@ package com.example.imagedetectiontubes
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -15,6 +16,7 @@ import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.provider.MediaStore
 import android.util.Log
 import android.view.TextureView
 import android.view.Surface
@@ -78,8 +80,10 @@ class MainActivity : ComponentActivity() {
             startGalleryButton.visibility = Button.GONE
             exitButton.visibility = Button.VISIBLE
             textureView.visibility = TextureView.GONE
-            imageView.visibility = ImageView.GONE
-//            openGallery()
+            imageView.visibility = ImageView.VISIBLE
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, 101)
         }
 
         exitButton.setOnClickListener {
@@ -168,6 +172,58 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         // Releases model resources if no longer used.
         model.close()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
+            val uri = data.data
+            if (uri != null) {
+                bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                getPrediction()
+            }
+        }
+    }
+
+    private fun getPrediction() {
+        val image = imageProcessor.process(TensorImage.fromBitmap(bitmap))
+        val outputs = model.process(image)
+        val locations = outputs.locationsAsTensorBuffer.floatArray
+        val classes = outputs.classesAsTensorBuffer.floatArray
+        val scores = outputs.scoresAsTensorBuffer.floatArray
+
+        val mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = Canvas(mutable)
+
+        val h = mutable.height
+        val w = mutable.width
+
+        paint.textSize = h / 15f
+        paint.strokeWidth = h / 85f
+        scores.forEachIndexed { index, fl ->
+            if (fl > 0.5) {
+                val x = index * 4
+                paint.color = colors[index % colors.size]
+                paint.style = Paint.Style.STROKE
+                canvas.drawRect(
+                    RectF(
+                        locations[x + 1] * w,
+                        locations[x] * h,
+                        locations[x + 3] * w,
+                        locations[x + 2] * h
+                    ), paint
+                )
+                paint.style = Paint.Style.FILL
+                canvas.drawText(
+                    labels[classes[index].toInt()] + " " + fl.toString(),
+                    locations[x + 1] * w,
+                    locations[x] * h,
+                    paint
+                )
+            }
+        }
+        imageView.setImageBitmap(mutable)
     }
 
     @SuppressLint("MissingPermission")

@@ -18,6 +18,7 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.TextureView
 import android.view.Surface
+import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
@@ -59,7 +60,37 @@ class MainActivity : ComponentActivity() {
 
         imageView = findViewById(R.id.imageView)
         textureView = findViewById(R.id.textureView)
-        textureView.surfaceTextureListener = object:TextureView.SurfaceTextureListener{
+        val startCameraButton: Button = findViewById(R.id.startCameraButton)
+        val startGalleryButton: Button = findViewById(R.id.startGalleryButton)
+        val exitButton: Button = findViewById(R.id.exitButton)
+
+        startCameraButton.setOnClickListener {
+            startCameraButton.visibility = Button.GONE
+            startGalleryButton.visibility = Button.GONE
+            exitButton.visibility = Button.VISIBLE
+            textureView.visibility = TextureView.VISIBLE
+            imageView.visibility = ImageView.VISIBLE
+            openCamera()
+        }
+
+        startGalleryButton.setOnClickListener{
+            startCameraButton.visibility = Button.GONE
+            startGalleryButton.visibility = Button.GONE
+            exitButton.visibility = Button.VISIBLE
+            textureView.visibility = TextureView.GONE
+            imageView.visibility = ImageView.GONE
+//            openGallery()
+        }
+
+        exitButton.setOnClickListener {
+            startCameraButton.visibility = Button.VISIBLE
+            startGalleryButton.visibility = Button.VISIBLE
+            exitButton.visibility = Button.GONE
+            textureView.visibility = TextureView.GONE
+            imageView.visibility = ImageView.GONE
+        }
+
+        textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(
                 surface: SurfaceTexture,
                 width: Int,
@@ -92,7 +123,7 @@ class MainActivity : ComponentActivity() {
                 val locations = outputs.locationsAsTensorBuffer.floatArray
                 val classes = outputs.classesAsTensorBuffer.floatArray
                 val scores = outputs.scoresAsTensorBuffer.floatArray
-//                val numberOfDetections = outputs.numberOfDetectionsAsTensorBuffer.floatArray
+                //                val numberOfDetections = outputs.numberOfDetectionsAsTensorBuffer.floatArray
 
                 var mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
                 val canvas = Canvas(mutable)
@@ -100,17 +131,29 @@ class MainActivity : ComponentActivity() {
                 var h = mutable.height
                 var w = mutable.width
 
-                paint.textSize = h/15f
-                paint.strokeWidth = h/85f
+                paint.textSize = h / 15f
+                paint.strokeWidth = h / 85f
                 scores.forEachIndexed { index, fl ->
-                    if(fl > 0.5){
+                    if (fl > 0.5) {
                         var x = index
                         x *= 4
                         paint.color = colors[index]
                         paint.style = Paint.Style.STROKE
-                        canvas.drawRect(RectF(locations[x+1] *w, locations[x] *h, locations[x+3] *w, locations[x+2] *h), paint)
+                        canvas.drawRect(
+                            RectF(
+                                locations[x + 1] * w,
+                                locations[x] * h,
+                                locations[x + 3] * w,
+                                locations[x + 2] * h
+                            ), paint
+                        )
                         paint.style = Paint.Style.FILL
-                        canvas.drawText(labels[classes[index].toInt()] + " " + fl.toString(), locations[x+1] *w, locations[x] *h, paint)
+                        canvas.drawText(
+                            labels[classes[index].toInt()] + " " + fl.toString(),
+                            locations[x + 1] * w,
+                            locations[x] * h,
+                            paint
+                        )
                     }
                 }
 

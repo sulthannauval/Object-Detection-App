@@ -1,19 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextureView
+        android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/textureView"/>
+        android:visibility="gone" />
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000"
-        android:id="@+id/imageView"/>
-<!--        android:visibility="gone"-->
+        android:visibility="gone" />
 
+    <Button
+        android:id="@+id/startCameraButton"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Start Camera"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/startGalleryButton"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Open Gallery"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/startCameraButton"/>
+
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit"
+        android:layout_below="@id/startGalleryButton"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone" />
 </RelativeLayout>

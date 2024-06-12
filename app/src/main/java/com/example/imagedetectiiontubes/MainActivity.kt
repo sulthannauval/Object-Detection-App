@@ -13,7 +13,6 @@ import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.os.Bundle
-import android.os.FileUtils
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
@@ -23,17 +22,15 @@ import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import com.example.imagedetectiiontubes.ml.AutoModel1
-import com.example.imagedetectiiontubes.ui.theme.ImageDetectiionTUBESTheme
 import org.tensorflow.lite.support.common.FileUtil
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
-import java.lang.reflect.Method
 
 @Suppress("DEPRECATION")
 class MainActivity : ComponentActivity() {
     private lateinit var labels: List<String>
-    var colors = listOf<Int>(
+    var colors = listOf(
         Color.BLUE, Color.GREEN, Color.RED, Color.CYAN, Color.GRAY, Color.BLACK,
         Color.DKGRAY, Color.MAGENTA, Color.YELLOW, Color.RED)
     private val paint = Paint()
@@ -95,7 +92,7 @@ class MainActivity : ComponentActivity() {
                 val locations = outputs.locationsAsTensorBuffer.floatArray
                 val classes = outputs.classesAsTensorBuffer.floatArray
                 val scores = outputs.scoresAsTensorBuffer.floatArray
-                val numberOfDetections = outputs.numberOfDetectionsAsTensorBuffer.floatArray
+//                val numberOfDetections = outputs.numberOfDetectionsAsTensorBuffer.floatArray
 
                 var mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
                 val canvas = Canvas(mutable)
@@ -109,11 +106,11 @@ class MainActivity : ComponentActivity() {
                     if(fl > 0.5){
                         var x = index
                         x *= 4
-                        paint.setColor(colors.get(index))
+                        paint.color = colors[index]
                         paint.style = Paint.Style.STROKE
-                        canvas.drawRect(RectF(locations.get(x+1)*w, locations.get(x)*h, locations.get(x+3)*w, locations.get(x+2)*h), paint)
+                        canvas.drawRect(RectF(locations[x+1] *w, locations[x] *h, locations[x+3] *w, locations[x+2] *h), paint)
                         paint.style = Paint.Style.FILL
-                        canvas.drawText(labels[classes.get(index).toInt()] + " " + fl.toString(), locations.get(x+1)*w, locations.get(x)*h, paint)
+                        canvas.drawText(labels[classes[index].toInt()] + " " + fl.toString(), locations[x+1] *w, locations[x] *h, paint)
                     }
                 }
 
